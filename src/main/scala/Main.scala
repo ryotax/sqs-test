@@ -48,15 +48,17 @@ object Main {
 
   private def consumeMessage(msg: Message) {
     println(s"process ${msg.getBody}, ${msg.getMessageId}")
-    Thread.sleep(10)
+    Thread.sleep(50)
   }
 
   def sendMessages(n: Int): Unit = {
     println("send messages")
+    val random = new scala.util.Random(new java.security.SecureRandom())
     val sqsAsync  = new AmazonSQSAsyncClient()
     (0 until n) foreach {i =>
-      val req = new SendMessageRequest(SqsUrl, s"msg: ${i}")
+      val req = new SendMessageRequest(SqsUrl, s"msg: ${i} - ${random.alphanumeric.take(1000).mkString}")
       sqsAsync.sendMessageAsync(req)
+      Thread.sleep(20)
     }
     println("sent")
   }
